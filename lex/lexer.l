@@ -16,6 +16,17 @@ bool ("bool")
 file ("file")
 void ("void")
 pass ("pass")
+if "if"
+else "else"
+gt ("gt")
+lt ("lt")
+leq ("leq")
+geq ("geq")
+eq ("eq")
+ne ("ne")
+and ("and")
+or ("or")
+neg ("neg")
 
 %%
 
@@ -42,6 +53,28 @@ pass ("pass")
 {file} {fprintf(tokens, "Datatype: %s\n", yytext);}
 
 {pass} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{if} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{else} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{leq} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{geq} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{lt} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{gt} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{eq} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{ne} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{and} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{or} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{neg} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
 
 
 
