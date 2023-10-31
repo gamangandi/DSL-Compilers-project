@@ -44,6 +44,19 @@ add "+"
 sub "-"
 mul "*"
 div "/"
+regex "regex"
+grammar "grammar"
+parse "parse"
+assign ("=")
+ret ("return")
+for ("for")
+while ("while")
+T ("true")
+F ("false")
+reglabel "r"{number}
+gramlabel "p"{number}
+pointer ("- >"|"->")
+open ("open")
 
 
 %%
@@ -122,8 +135,31 @@ div "/"
 
 {comma} {fprintf(parsed, "%s", yytext); fprintf(tokens,"Punctuation: %s\n", yytext); return comma;}
 
+{ret} {fprintf(parsed, "%s", yytext); fprintf(tokens, "reserved keyword: %s\n", yytext); return ret;}
 
+{while} {fprintf(parsed, "%s", yytext); fprintf(tokens, "reserved keyword: %s\n", yytext); return While;}
 
+{for} {fprintf(parsed, "%s", yytext); fprintf(tokens, "reserved keyword: %s\n", yytext); return For;}
+
+{regex} {fprintf(parsed, "%s", yytext); fprintf(tokens, "reserved keyword: %s\n", yytext); return regex;}
+
+{grammar} {fprintf(parsed, "%s", yytext); fprintf(tokens, "reserved keyword: %s\n", yytext); return grammar;}
+
+{assign} {fprintf(parsed, "%s", yytext); fprintf(tokens, "operator: %s\n", yytext); return assign;}
+
+{pointer} {fprintf(parsed, "%s", yytext); fprintf(tokens, "operator: %s\n", yytext); return pointer;}
+
+{T} {fprintf(parsed, "%s", yytext); fprintf(tokens, "reserved keyword: %s\n", yytext); return T;}
+
+{F} {fprintf(parsed, "%s", yytext); fprintf(tokens, "reserved keyword: %s\n", yytext); return F;}
+
+{reglabel} {fprintf(parsed, "%s", yytext); fprintf(tokens, "label: %s\n", yytext); return reglabel;}
+
+{gramlabel} {fprintf(parsed, "%s", yytext); fprintf(tokens, "label: %s\n", yytext); return gramlabel;}
+
+{open} {fprintf(parsed, "%s", yytext); fprintf(tokens, "reserved keyword: %s\n", yytext); return open;}
+
+{parse} {fprintf(parsed, "%s", yytext); fprintf(tokens, "reserved keyword: %s\n", yytext); return parse;}
 
 {id} {fprintf(parsed, "%s", yytext); fprintf(tokens, "id: %s\n", yytext); return id;}
 
