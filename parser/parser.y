@@ -107,6 +107,40 @@ Y : id Y1;
 Y1 :
    | comma Y;
 
+estmt : id assign exprhs semic;
+
+exprhs : Phelper;
+
+binop : add | mul | sub | divi
+
+binops : openp bh binop bh closep;
+
+unops : bh unophelp;
+unophelp : add add | sub sub;
+
+bh : id
+   | num
+   | W
+   | boolean
+   | binops
+   | callees
+   | openp Phelper closep;
+
+
+cstmt : ch;
+
+ch : callees semic{fprintf(parsed, " : call statement");};
+
+callees : id callarglist | parsecall;
+
+callarglist : openp Args closep;
+
+Args : J Args1;
+
+Args1 :
+   | comma Args;
+
+J : Phelper;
 
 
 
