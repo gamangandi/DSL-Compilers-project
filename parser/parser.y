@@ -46,6 +46,46 @@ stmt  : istmt
 	  | cstmt
 	  | rstmt;
 
+rstmt : ret retarg semic{fprintf(parsed, " : return statement"); rets++;};
+
+retarg :
+       | Void
+       | Phelper;
+
+
+istmt : If openp P closep {fprintf(parsed, " : conditional statement");} MethodBody E;
+
+negex : neg openp neghelper closep
+
+neghelper : Phelper;
+
+P : Phelper | ;
+
+Phelper : A logic Phelper | A;
+
+boolean : T | F;
+
+logic : geq| leq | gt | lt | ne | eq | and | or;
+
+A : id
+  | num
+  | W
+  | charlit
+  | strlit
+  | boolean
+  | binops
+  | unops
+  | negex
+  | callees
+  | filerhs
+  | openp Phelper closep;
+
+E : 
+  | Else {fprintf(parsed, " : conditional statement");} MethodBody;
+
+
+
+
 %%
 int yyerror(char *s)
 {
