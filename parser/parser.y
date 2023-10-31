@@ -18,6 +18,34 @@ int rets = 0;
 
 %%
 
+S : Reg S | Gram S | M S |;
+
+M : func_decl MethodBody {if(rets == 0){yyerror("return error"); return 1;} else if(rets != 0){rets = 0;}};
+
+func_decl : types id arglist{fprintf(parsed, " : function declaration");};
+
+types : intd | chard | stringd | boold | Void | filed;
+
+arglist : openp X closep | openp closep;
+
+X : types id X1;
+
+X1 : 
+   |comma X;
+
+MethodBody : openf stmts closef;
+
+stmts : 
+      | stmt stmts
+      | MethodBody stmts;
+
+stmt  : istmt 
+	  | lstmt 
+	  | dstmt
+	  | estmtnotfor
+	  | cstmt
+	  | rstmt;
+
 %%
 int yyerror(char *s)
 {
