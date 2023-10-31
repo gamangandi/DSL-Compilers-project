@@ -27,6 +27,19 @@ ne ("ne")
 and ("and")
 or ("or")
 neg ("neg")
+openp ("(")
+closep (")")
+openf ("{")
+closef ("}")
+semic (";")
+comma (",")
+colon ":"
+orsym "|"
+ques "?"
+add "+"
+mul "*"
+sub "-"
+div "/"
 
 %%
 
@@ -75,6 +88,32 @@ neg ("neg")
 {or} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
 
 {neg} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{add} {fprintf(tokens, "operator: %s\n", yytext);}
+
+{mul} {fprintf(tokens, "operator: %s\n", yytext);}
+
+{sub} {fprintf(tokens, "operator: %s\n", yytext);}
+
+{div} {fprintf(tokens, "operator: %s\n", yytext);}
+
+{colon} {fprintf(tokens, "punctuation: %s\n", yytext);}
+
+{orsym} {fprintf(tokens, "special symbol: %s\n", yytext);}
+
+{ques} {fprintf(tokens, "special symbol: %s\n", yytext);}
+
+{semic} {fprintf(tokens,"Punctuation: %s\n", yytext);}
+
+{comma} {fprintf(tokens,"Punctuation: %s\n", yytext);}
+
+{openp} {fprintf(tokens, "special symbol: %s\n", yytext);}
+
+{closep} {fprintf(tokens, "special symbol: %s\n", yytext);}
+
+{openf} {fprintf(tokens, "special symbol: %s\n", yytext);}
+
+{closef} {fprintf(tokens, "special symbol: %s\n", yytext);}
 
 
 
