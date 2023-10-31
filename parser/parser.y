@@ -83,6 +83,31 @@ A : id
 E : 
   | Else {fprintf(parsed, " : conditional statement");} MethodBody;
 
+lstmt : forstmt | whilestmt;
+
+forstmt : for_decl MethodBody;
+
+for_decl : For openp estmt P semic forhelper closep {fprintf(parsed, " : loop");};
+
+estmtnotfor : estmt{fprintf(parsed, " : expression statement");}; 
+
+forhelper : | unops;
+
+whilestmt : while_decl MethodBody;
+
+while_decl : While openp P closep {fprintf(parsed, " : loop");} task; 
+
+
+dstmt : types Y dhelp semic{fprintf(parsed, " : declaration statement");};
+
+dhelp : assign exprhs | ;
+
+Y : id Y1;
+
+Y1 :
+   | comma Y;
+
+
 
 
 
