@@ -1,9 +1,15 @@
 int func1(){
 
-    int dummy;
-    dummy = 1;
-
-    return dummy;
+    int count;
+    count = 1;
+    count++;
+    if(a lt 0){
+        count++;
+    }else{
+    count = count*count;
+    }
+    
+    return (dalle-1);
 }
 
 regex r{
