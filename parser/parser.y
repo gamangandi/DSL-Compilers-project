@@ -142,10 +142,56 @@ Args1 :
 
 J : Phelper;
 
+Reg : regex id {fprintf(parsed, " : lexer declaration");} openf regbody closef;
 
+regbody : regstmts;
 
+regstmts : regstmt semic regstmts | ;
+
+regstmt : reglabel colon reghelper {fprintf(parsed, " : regular expression declaration");} openf {fprintf(parsed, "\n");} pass id semic {fprintf(parsed, " : pass statement\n");} closef;
+
+reghelper1 : starregs | plusregs | qregs | orregs ;
+
+reghelper : reghelper1 reghelper |;
+
+starregs : openp orexp closep mul;
+
+plusregs : openp orexp closep add;
+
+qregs : openp orexp closep ques;
+
+orregs : openp orexp closep;
+
+orexp : K orexp1;
+
+orexp1 : orsym orexp | ;
+
+K : reghelper | id;
+
+Gram : grammar id {fprintf(parsed, " : grammar declaration");} openf grambody closef;
+
+grambody : prules;
+
+prules : prule semic {fprintf(parsed, " : production declaration");} prules | ;
+
+prule : gramlabel colon id pointer gramhelper;
+
+gramhelper : ids gramhelper1;
+
+ids : id ids1;
+
+ids1 : optscope ids | optscope;
+
+gramhelper1 : orsym gramhelper | ;
+
+filerhs : open openp strlit comma strlit closep;
+
+parsecall : parse openp id comma id comma id closep;
+
+optscope : | openf stmts closef
 
 %%
+
 int yyerror(char *s)
 {
 	fprintf(parsed,"\n%s at line %d\n", s, yylineno);
