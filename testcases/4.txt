@@ -1,0 +1,29 @@
+int func1(){
+
+    int dummy;
+    dummy = 1;
+
+    return dummy;
+}
+
+regex r{
+
+    r1: ((y|u)*(g)?)+ {pass token1;};
+
+    r2: (a+b*)? {pass token2;};
+}
+
+grammar g1{
+
+    p1: A -> B{func1();}|C;
+    p2: B -> token1;
+    p3: C -> token2 {func1();};
+}
+
+int main(){
+
+    file ab = open("ip.txt","r");
+    parse(ab, r, g);
+
+    return 0;
+}
