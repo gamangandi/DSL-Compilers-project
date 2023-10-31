@@ -40,6 +40,20 @@ add "+"
 mul "*"
 sub "-"
 div "/"
+assign ("=")
+ret ("return")
+for ("for")
+while ("while")
+T ("true")
+F ("false")
+regex "regex"
+grammar "grammar"
+pointer ("- >"|"->")
+reglabel "r"{number}
+gramlabel "p"{number}
+parse "parse"
+open "open"
+
 
 %%
 
@@ -115,7 +129,31 @@ div "/"
 
 {closef} {fprintf(tokens, "special symbol: %s\n", yytext);}
 
+{ret} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
 
+{while} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{for} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{regex} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{grammar} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{assign} {fprintf(tokens, "operator: %s\n", yytext);}
+
+{pointer} {fprintf(tokens, "operator: %s\n", yytext);}
+
+{T} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{F} {fprintf(tokens, "reserved keyword: %s\n", yytext);}
+
+{reglabel} {fprintf(tokens, "label: %s\n", yytext);}
+
+{gramlabel} {fprintf(tokens, "label: %s\n", yytext);}
+
+{open} {fprintf(tokens, "label: %s\n", yytext);}
+
+{parse} {fprintf(tokens, "label: %s\n", yytext);}
 
 {id} {fprintf(tokens, "id: %s\n", yytext);}
 
