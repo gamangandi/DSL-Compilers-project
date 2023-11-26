@@ -1,0 +1,12 @@
+grammar g2
+{
+    S -> program ;
+    program -> stmt_list ;
+    stmt_list -> stmt_list statement | ;
+    statement -> assignment | conditional ;
+    assignment -> id eqv expr ;
+    expr -> expr add term | term ;
+    term -> term mult factor | factor ;
+    factor -> ( expr ) | id | num ;
+    conditional -> if ( expr ) stmt_list else stmt_list ;
+}
