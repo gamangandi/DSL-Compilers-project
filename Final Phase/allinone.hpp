@@ -395,3 +395,62 @@ void closure(node& box, vector<vector<string>>& G, vector<string> terminals, vec
         }
     }
 }
+
+void shift(node& box, vector<vector<string>>& G, vector<string> terminals, vector<string> nonterminals, map<baserules, nodeptr>& existing_bases, int &states){
+
+    map<string, vector<pair<vector<string>, int>>> shiftfor;
+
+    for(int i = 0; i < box.rules.size(); i++){
+
+        int j = 0;
+
+        while(box.rules[i].first[j] != "dot"){
+
+            j++;
+        }
+
+        if(j == box.rules[i].first.size() - 1) continue;
+
+        else{
+
+            string pushfor = box.rules[i].first[j+1];
+
+            if(pushfor == "ep") continue;
+
+            pair<vector<string>, int> temp;
+
+            temp = box.rules[i];
+
+            temp.first[j] = pushfor;
+            temp.first[j+1] = "dot";
+
+            if(shiftfor.find(pushfor) != shiftfor.end()){
+
+                shiftfor[pushfor].push_back(temp);
+            }
+
+            else shiftfor.insert({pushfor, {temp}});        
+        }
+    }
+
+    for(auto x: shiftfor){
+
+        string pushfor = x.first;
+        sort(x.second.begin(), x.second.end());
+
+        if(existing_bases.find(x.second) != existing_bases.end()){
+
+            box.towards.push_back({pushfor, existing_bases[x.second]});            
+            continue;            
+        }
+
+        nodeptr newnode = new node();
+        newnode->state = states;
+        states++;
+
+        newnode->base_rules = x.second;
+
+        existing_bases.insert({x.second, newnode});
+        box.towards.push_back({x.first, newnode});
+    }
+}
