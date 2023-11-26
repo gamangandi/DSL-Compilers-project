@@ -1,0 +1,17 @@
+grammar g3{
+
+    EXPR ->	EXPR mult EXPR | TERM ;
+
+    TERM ->	TERM add TERM |	FACTOR ;
+
+    FACTOR -> num | lpar EXPR rpar | star EXPR ;
+
+    E -> EXPR | FACTOR ;
+
+    D -> while op TERM cb of D cf | B;
+
+    C -> B C D;
+    
+    B -> a B ;
+
+}

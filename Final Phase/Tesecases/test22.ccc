@@ -1,0 +1,32 @@
+grammar h2{
+
+    E -> | Else MethodBody;
+
+    lstmt -> forstmt | whilestmt;
+
+    forstmt -> for_decl MethodBody;
+
+    for_decl -> For openp estmt P semic forhelper closep ;
+
+    estmtnotfor -> estmt ; 
+
+    forhelper -> | unops;
+
+    whilestmt -> while_decl MethodBody;
+
+    while_decl -> While openp P closep  task; 
+
+
+    dstmt -> types Y dhelp semic ;
+
+    dhelp -> assign exprhs | ;
+
+    Y -> id Y1;
+
+    Y1 -> | comma Y;
+
+    estmt -> id assign exprhs semic;
+
+    exprhs -> Phelper;
+    
+}
