@@ -1,0 +1,16 @@
+grammar g1{
+
+    S -> H B|;
+    B -> St B | F B |;
+    F -> I ID ( combo ) opfb FB retrn clsfb;
+    combo -> ID comma combo | ID ;
+    FB -> Decl FB | call FB | assign FB | ;
+    Decl -> I ID equ RHS end | I ID end ;
+    assign -> ID equ RHS end ;
+    RHS -> A | RHS P;
+    P -> per RHS | add RHS | sub RHS | mul RHS | div RHS;
+    A -> ID | const  | ID ( combo ) ;
+    RHS1 -> A RHS1 | ;
+    St -> struct opfb Decl clsfb end ;
+   
+}
