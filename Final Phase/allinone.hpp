@@ -291,3 +291,107 @@ void foll(vector<vector<string>> G,vector<string> terminals, vector<string> non_
     }
   }
 }
+
+void closure(node& box, vector<vector<string>>& G, vector<string> terminals, vector<string> nonterminals, map<string, set<int>> first){
+
+    set<pair<int, string>> expandfor;
+
+    terminals.push_back("ep");
+    terminals.push_back("dollar");
+
+    map<string, int> corrospondence;
+
+    for(int i = 0; i < terminals.size(); i++){
+
+        corrospondence[terminals[i]] = i;
+    }
+
+    set<string> T(terminals.begin(), terminals.end());
+    set<string> NT(nonterminals.begin(), nonterminals.end());
+
+    for(auto rule : box.base_rules){
+
+        box.rules.push_back(rule);
+    }
+
+    bool change = true;
+
+    while(change){
+
+        change = false;
+
+        for(int i = 0; i < box.rules.size(); i++){
+
+            int j;
+
+            for(j = 0; j < box.rules[i].first.size(); j++){
+
+                if(box.rules[i].first[j] == "dot"){
+
+                    break;
+                }
+            }
+
+            if(j == box.rules[i].first.size() - 1) continue;
+
+            else if(T.find(box.rules[i].first[j+1]) != T.end()) continue;
+
+            else{
+
+                string cornonterminal = box.rules[i].first[j+1];
+                int lookahead;
+
+                if(j + 1 == box.rules[i].first.size() - 1){
+
+                    lookahead = box.rules[i].second;
+                    expandfor.insert({lookahead, cornonterminal});
+                    continue;
+                }
+
+                else{
+
+                    if(T.find(box.rules[i].first[j+2]) != T.end()){
+
+                        lookahead = corrospondence[box.rules[i].first[j+2]];
+                        expandfor.insert({lookahead, cornonterminal});
+
+                    }
+
+                    else{
+
+                        for(auto a : first[box.rules[i].first[j+2]]){
+
+                            if(terminals[a] == "ep") continue;
+
+                            expandfor.insert({a, cornonterminal});
+                        }
+                    }
+                }
+            }
+        }
+
+        for(auto ex : expandfor){
+
+            string X = ex.second;
+            int lookahead = ex.first;
+
+            for(auto rule : G){
+
+                if(rule[0] == X){
+
+                    vector<string> temprule = rule;
+
+                    temprule.insert(temprule.begin() + 2, "dot");
+
+                    pair<vector<string>, int> contender = {temprule, lookahead};
+
+                    if(find(box.rules.begin(), box.rules.end(), contender) == box.rules.end()){
+
+                        box.rules.push_back(contender);
+                        change = true;
+                    }
+                }
+            }        
+        }
+    }
+}
