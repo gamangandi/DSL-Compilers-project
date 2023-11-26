@@ -454,3 +454,85 @@ void shift(node& box, vector<vector<string>>& G, vector<string> terminals, vecto
         box.towards.push_back({x.first, newnode});
     }
 }
+
+
+void build_automaton(vector<vector<string>>& G, vector<string> terminals, vector<string> nonterminals, map<string, set<int>> first, map<baserules, nodeptr>& existing_bases, int& states, set<int>& visited){
+
+    vector<string> main_rule = G[0];
+    string main_sym = main_rule[0];
+    string main_sym_dash = main_sym + "dash";
+    int n = terminals.size();
+
+    nodeptr firstnode = new node();
+    firstnode -> base_rules = {{{main_sym_dash, "pointer", "dot", main_sym}, n+1}};
+    firstnode->state = states;
+    states++;
+
+    existing_bases.insert({firstnode->base_rules, firstnode});
+
+    bool checker = true;
+
+    while(checker){
+
+        checker = false;
+
+        int automaton_size = existing_bases.size();
+
+        for(auto x: existing_bases){
+
+            int state = x.second->state;
+
+            if(visited.find(state) != visited.end()){
+
+                continue;
+            }
+            visited.insert(state);
+
+            closure(*(x.second), G, terminals, nonterminals, first);
+            shift(*(x.second), G, terminals, nonterminals, existing_bases, states);
+        }
+
+        if(automaton_size != existing_bases.size()){
+
+            checker = true;            
+        }
+    }
+}
+
+void print_box(nodeptr box, vector<string> terminals){
+
+    terminals.push_back("ep");
+    terminals.push_back("dollar");
+
+    baserules rules = box->rules;
+
+    vector<pair<string, node*>> towards = box->towards;
+
+    int state = box->state;
+
+    cout<<"-----------------------------------"<<endl;
+
+    cout<<"STATE: "<<state<<endl<<"RULES: "<<endl;
+
+    for(auto x : rules){
+
+        cout<<terminals[x.second]<<": ";
+
+        for(auto y : x.first){
+
+            cout<<y<<" ";
+        }
+        cout<<endl; 
+    }
+
+    cout<<"TOWARDS"<<endl;
+
+    for(auto x: towards){
+
+        cout<<x.first<<": ";
+        cout<<x.second->state<<endl;
+    }
+
+    cout<<"-----------------------------------"<<endl<<endl;
+
+}
