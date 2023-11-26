@@ -103,3 +103,40 @@ void generate_grammar(vector<string>& stringified_grammar, vector<string>& nonte
 
     terminals.assign(t.begin(), t.end());
 }
+
+void print_follow(map<string, set<int>> follow, vector<string> terminals){
+
+    terminals.push_back("ep");
+    terminals.push_back("dollar");
+
+    for(auto x: follow){
+
+        cout<<x.first<<": ";
+
+        for (auto y: x.second){
+
+            cout<<terminals[y]<<" ";
+        }   
+
+        cout<<endl;     
+    }
+}
+
+void print_first(map<string, set<int>> first, vector<string> terminals){
+
+    terminals.push_back("ep");
+
+    for(auto x: first){
+
+        cout<<x.first<<": ";
+
+        for (auto y: x.second){
+
+            cout<<terminals[y]<<" ";
+        }    
+
+        cout<<endl;    
+    }
+
+
+}
