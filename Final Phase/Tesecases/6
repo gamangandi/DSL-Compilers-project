@@ -1,0 +1,11 @@
+grammar gpa
+{
+    H -> S ;
+    S -> E ;
+    E -> E add T ;
+    E -> T ;
+    T -> T m F ;
+    T -> F ;
+    F -> ( E ) ;
+    F -> id ;
+}
