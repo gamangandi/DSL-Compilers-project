@@ -690,3 +690,31 @@ bool parse(vector<vector<string>> G, vector<string> input, map<int, map<string, 
 
     return false;
 }
+
+void print_parsing_table(map<int, map<string, vector<string>>>& table){
+
+    //cout<<table.size()<<endl<<endl;
+
+    ofstream out;
+
+    out.open("out.txt");
+
+    for(auto x: table){
+
+        out<<"state "<<x.first<<": "<<endl;
+
+        for(auto y: x.second){
+
+            out<<"on "<<y.first<<endl<<endl;
+
+            for(auto z: y.second){
+
+                out<<z<<endl;
+            }
+
+            out<<endl;
+        }
+
+        out<<endl;
+    }
+}
