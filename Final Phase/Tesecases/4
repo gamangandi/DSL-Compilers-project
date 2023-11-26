@@ -1,0 +1,26 @@
+grammar g1{
+
+    S -> H B|;
+
+    B -> St B | F B |;
+
+    F -> I ID ( combo ) { FB retrn };
+
+    combo -> ID , combo | ID ;
+
+    FB -> Decl FB | call FB | assign FB | | Loop FB ;
+
+    Decl -> I ID = RHS ; | I ID ; ;
+
+    assign -> ID = RHS ; ;
+
+    RHS -> ID | const  | ID ( combo ) | RHS per RHS | RHS + RHS |RHS - RHS |RHS * RHS |RHS / RHS;
+
+    St -> struct { Decl } ; ;
+
+    Loop -> While ( loopcond ) opfb FB clsfb ;
+
+    loopcond -> ( RHS > RHS ) or  loop cond| RHS > RHS ;
+    
+    
+}
