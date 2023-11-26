@@ -718,3 +718,110 @@ void print_parsing_table(map<int, map<string, vector<string>>>& table){
         out<<endl;
     }
 }
+
+int support(vector<string> stringified_grammar, string GGGG){
+
+    vector<vector<string>> grammar;
+    vector<string> terminals;
+    vector<string> nonterminals;
+    map<string,set<int>> first;
+    map<string,set<int>> follow;
+
+    //vector<string> stringified_grammar = {"B","pointer","A","x","y","orsym","C","semic","A","pointer","x","z","orsym","semic","C","pointer","C","w","orsym","v","semic"};
+    generate_grammar(stringified_grammar, nonterminals, terminals, grammar);
+
+
+
+    f(grammar, terminals, nonterminals, first, follow);
+    foll(grammar, terminals, nonterminals, first, follow);
+
+
+    map<baserules,nodeptr> existing_bases;
+    map<int, nodeptr> state_ptr;
+    map<vector<string>, int> production_map;
+    set<int> visited;
+    map<int, map<string, vector<string>>> table;
+    int states = 0;
+
+    int i = 0;
+
+    for(auto x: grammar){
+
+        vector<string> temp = x;
+        temp.push_back("dot");
+        production_map.insert({temp, i});
+        i++;
+    }
+
+    build_automaton(grammar, terminals, nonterminals, first, existing_bases, states, visited);
+
+    for(auto x: existing_bases){
+
+        int state = x.second->state;
+        nodeptr temp = x.second;
+
+        state_ptr.insert({state, temp});
+    }
+
+    create_parsing_table(grammar, terminals, nonterminals, table, state_ptr, production_map);
+    print_parsing_table(table);
+
+    ifstream input;
+
+    input.open("input.txt");
+
+    string b;
+    b = "";
+
+    cout<<"For grammar: "<<GGGG<<"\nUser functions:\n\nfirst(): prints all the first sets of non terminals of the grammar.\nfollow(): prints all the follow sets of the non terminals of the grammar.\nautomaton(): prints all the nodes in the automaton created.\nparse_table(): prints the parse table corresponding to the grammar.\ninput(): to parse an input file.\nexit; to terminate the execution.\n\n";
+
+    while(b != "exit"){
+
+        cin >> b;
+        if(b == "first()"){ print_first(first,terminals);}
+        else if(b == "follow()"){ print_follow(follow,terminals);}
+        else if(b == "automaton()") {
+            
+            for(auto x: state_ptr){
+
+                print_box(x.second, terminals);
+            }
+        }
+        else if(b == "parse_table()"){
+
+            print_parsing_table(table);
+            cout<<"Output obtained at out.txt"<<endl;
+        }
+
+        else if(b == "input()"){
+
+            cout<<"\nProvide a file name: ";
+            string temp;
+            cin>>temp;
+
+            ifstream ipfile;
+            ipfile.open(temp);
+
+            vector<string> input;
+
+            string x;
+
+            while(ipfile>>x){
+
+                input.push_back(x);
+            }
+
+            parse(grammar,input, table, production_map);
+        }
+
+        else if(b=="exit") {continue;}
+
+        else{
+
+            cout<<"invalid function!!"<<endl;
+        }
+    }
+    
+
+    return 0;
+}
