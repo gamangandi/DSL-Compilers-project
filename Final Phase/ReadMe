@@ -1,1 +1,4 @@
-
+Change the name of the input file in the bash script to the coresponding .ccc file.
+Run this Bash script on the terminal.
+you'll obtain an error in case of erroneous code.
+If there is no error, we'll get a run time environent through which we can obtain properties of the given grammer.
