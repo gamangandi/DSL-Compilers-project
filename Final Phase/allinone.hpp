@@ -536,3 +536,157 @@ void print_box(nodeptr box, vector<string> terminals){
     cout<<"-----------------------------------"<<endl<<endl;
 
 }
+
+void create_parsing_table(vector<vector<string>> G, vector<string> terminals, vector<string> nonterminals, map<int, map<string, vector<string>>> & table, map<int, nodeptr>& state_ptr, map<vector<string>, int>& production_map){
+
+    terminals.push_back("ep");
+    terminals.push_back("dollar");
+
+    for(auto x: state_ptr){
+
+        int state = x.first;
+
+        vector<pair<string, node*>> towards = x.second->towards;
+
+        map<string, int> reduce_to;
+
+        for(auto y: x.second->rules){
+
+            if(y.first[y.first.size() - 1] != "dot") continue;
+
+            int follow_sym_index = y.second;
+            string follow_sym = terminals[follow_sym_index];
+
+            int prod_num = -1;
+
+            if(production_map.find(y.first) != production_map.end()){
+
+                prod_num = production_map[y.first];
+            }
+
+            string corr_red = "R" + to_string(prod_num);
+
+            if(table[state].find(follow_sym) == table[state].end()){
+
+                table[state].insert({follow_sym, {corr_red}});
+            }
+
+            else table[state][follow_sym].push_back(corr_red);            
+        }
+
+        for(auto y: towards){
+
+            string temp = y.first;
+            int to = y.second->state;
+            string corr_shift = "S" + to_string(to);
+
+            if(table[state].find(temp) == table[state].end()){
+
+                table[state].insert({temp, {corr_shift}});
+            }
+
+            else table[state][temp].push_back(corr_shift);           
+        }
+    }
+}
+
+bool parse(vector<vector<string>> G, vector<string> input, map<int, map<string, vector<string>>>& table, map<vector<string>, int>& production_map){
+
+    stack<string> inputs;
+    inputs.push("dollar");
+
+    for(int i = input.size()-1; i >= 0; i--){
+
+        inputs.push(input[i]);
+    }
+
+    stack<string> state_stack;
+    state_stack.push("0");
+
+    bool checker = true;
+
+    while(checker){
+
+        string stacksym = state_stack.top();
+        int state = stoi(stacksym);
+
+        string lookahead = inputs.top();
+
+        cout<<"input lookahead:  "<<lookahead<<endl;
+        cout<<"state on top: "<<state<<endl<<endl;
+
+        if(table[state].find(lookahead) == table[state].end()){
+
+            cout<<"unused symbol is being used"<<endl;
+            return 0;
+        }
+
+        string what_to_do = table[state][lookahead][0];
+
+        if(what_to_do[0] == 'S'){
+
+            string to_state_str = what_to_do.substr(1,what_to_do.size() - 1);
+
+            state_stack.push(lookahead);
+            state_stack.push(to_state_str);
+
+            inputs.pop();
+        }
+
+        else if(what_to_do[0] == 'R'){
+
+            if(what_to_do[1] == '-' && lookahead == "dollar"){
+
+                cout<<"parse successful, string accepted."<<endl<<endl;
+                return 1;
+            }
+
+            string reduce_using_rule = what_to_do.substr(1,what_to_do.size() -1);
+            int rule_number = stoi(reduce_using_rule);
+
+            vector<string> rule;
+
+            int h = 0;
+
+            for(auto x: production_map){
+
+                if(x.second == rule_number){
+                    rule = x.first;
+                    h = 1;
+                    break;
+                }
+            }
+
+            if(h == 0){
+
+                cout<<"error in code."<<endl;
+                return 0;
+            }
+
+            int removals = rule.size() - 3;
+            string insert_sym = rule[0];
+
+            for(int i = 0; i < removals*2; i++){
+
+                state_stack.pop();
+            }
+
+            string newstacktopstr = state_stack.top();
+            int newstacktop = stoi(newstacktopstr);
+
+
+            if(table[newstacktop].find(insert_sym) == table[newstacktop].end()){
+                cout<<"string is not in the grammar."<<endl;
+                return 0;
+            }
+
+            string newtop = table[newstacktop][insert_sym][0];
+            newtop = newtop.substr(1,newtop.size()-1);
+
+            state_stack.push(insert_sym);
+            state_stack.push(newtop);
+        }
+    }
+
+    return false;
+}
