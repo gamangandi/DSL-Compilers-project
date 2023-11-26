@@ -140,3 +140,154 @@ void print_first(map<string, set<int>> first, vector<string> terminals){
 
 
 }
+
+void uni(string A,string B, map<string, set<int>>& first, map<string, set<int>>& follow, int p = 0, int n = 0){
+  if(p==0) { for(auto j : first[B]) first[A].insert(j);}
+  else if(p==1){
+    for(auto j : first[B]) follow[A].insert(j);
+    follow[A].erase(n-1);
+  }
+  else if(p==2){
+    for(auto j : follow[B]) follow[A].insert(j);
+  }
+}
+
+void f(vector<vector<string>> G,vector<string> terminals, vector<string> non_terminals, map<string, set<int>>& first, map<string, set<int>>& follow){
+
+  terminals.push_back("ep");
+  int n = terminals.size();
+  unordered_map<string,int> d;
+  for(int i=0;i<n;i++) d[terminals[i]]=i;
+
+  vector<bool> v(G.size(),true);
+  unordered_set<string> NT(non_terminals.begin(),non_terminals.end());
+  unordered_set<string> T(terminals.begin(),terminals.end());
+
+  for(int i = 0;i<G.size();i++){
+    if(T.find(G[i][2]) != T.end()){
+      first[G[i][0]].insert(d[G[i][2]]);
+      v[i]=false;
+    }
+  }
+  bool temp = true;
+
+  while(temp){
+    temp = false;
+    for(int i=0;i<G.size();i++){
+
+        vector<string> fo(G[i].begin(),G[i].end());
+        string A = fo[0];
+        int r = first[A].size();
+        if(A == fo[2]) {
+            cout<<"eliminate left factoring for Non-terminal :"<<A<<endl;
+            exit(0);
+        }
+
+        if(!v[i]) continue; 
+        else{
+            int k = 2;
+            while(k < fo.size()){
+                
+                string B = fo[k];
+
+                if(A==B){k++; continue;}
+
+                if(T.find(B)!=T.end()){
+                    first[A].insert(d[B]);
+                    break;
+                }
+                else if(first[B].find(n-1)==first[B].end()){
+                    uni(A,B, first, follow);
+                    break;
+                }
+                else{
+                    bool hero =  (first[A].find(n-1)==first[A].end());
+                    uni(A,B, first, follow);
+                    if(hero && first[A].find(n-1)!=first[A].end()) first[A].erase(n-1);
+                }
+                k++;
+            }
+
+            if(k==fo.size()) first[A].insert(n-1);
+            if( first[A].size() != r ) temp = true;
+        }
+    }
+
+  }
+}
+
+void foll(vector<vector<string>> G,vector<string> terminals, vector<string> non_terminals, map<string, set<int>>& first, map<string, set<int>>& follow){
+  
+  terminals.push_back("ep");
+  int n = terminals.size();
+  terminals.push_back("dollar");
+  follow[G[0][0]].insert(n);
+  unordered_map<string,int> d;
+  for(int i=0;i<n;i++) d[terminals[i]]=i;
+
+  vector<bool> v(G.size(),true);
+  unordered_set<string> NT(non_terminals.begin(),non_terminals.end());
+  unordered_set<string> T(terminals.begin(),terminals.end());
+
+  for(int i = 0;i<G.size();i++){
+    if(T.find(G[i][2]) != T.end() && G[i].size()==3){
+      v[i]=false;
+      continue;
+    }
+    
+    for(int k = 2;k<G[i].size()-1;k++){
+      if(NT.find(G[i][k]) != NT.end() && T.find(G[i][k+1]) != T.end()){
+        follow[G[i][k]].insert(d[G[i][k+1]]);
+      }
+      else if(NT.find(G[i][k]) != NT.end() && NT.find(G[i][k+1]) != NT.end()){
+        uni(G[i][k],G[i][k+1],first, follow, 1,n);
+      }
+   
+    }
+  }
+  
+  bool temp = true;
+
+
+  while(temp){
+    temp = false;
+    for(int i = 0; i < G.size(); i++){
+      
+      vector<string> fo(G[i].begin()+2, G[i].end());
+      string A = G[i][0];
+      int len = fo.size()-1;
+
+      if(!v[i]) continue;
+      else{
+        
+        if(NT.find(fo[len]) != NT.end()) uni(fo[len],A,first, follow, 2);
+        string rest = A;
+        for(int j = len; j > 0; j--){
+          
+          string B = fo[j-1];
+          string C = fo[j];
+          if(T.find(B)!=T.end()) continue;
+          int rox = follow[B].size();
+
+          if(T.find(C)!=T.end()) follow[B].insert(d[C]);
+
+          else if(first[C].find(n-1)!=first[C].end()){
+            
+            uni(B,C,first, follow, 1,n);
+            uni(B,rest,first, follow, 2);
+            rest = B;
+          }
+          else{
+          
+            uni(B,C,first, follow, 1,n);
+            rest = B;
+          }
+
+          if(follow[B].size() != rox) temp = true;
+        }
+  
+      }
+
+    }
+  }
+}
