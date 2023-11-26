@@ -1,0 +1,23 @@
+grammar g2{
+
+    regstmts -> regstmt semic regstmts | ;
+
+    regstmt -> reglabel colon reghelper  openf  pass id semic closef;
+
+    reghelper1 -> starregs | plusregs | qregs | orregs ;
+
+    reghelper -> reghelper1 reghelper |;
+
+    starregs -> openp orexp closep mul;
+
+    plusregs -> openp orexp closep add;
+
+    qregs -> openp orexp closep ques;
+
+    orregs -> openp orexp closep;
+
+    orexp -> K orexp1;
+
+    orexp1 -> orsym orexp | ;
+    
+}
